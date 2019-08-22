@@ -1,5 +1,5 @@
 "use strict";
-export function isvalidobject(a) {
+function isvalidobject(a) {
   return (
     (a instanceof Object && typeof a === "object") || typeof a === "function"
   );
