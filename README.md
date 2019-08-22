@@ -2,9 +2,13 @@
 
 使用 `Proxy` 实现对 `Object` 的深度观察,检测跟踪对象深层次的属性的变化的`javascript`小工具,可以检测到对象本来不存在的属性的添加
 
+# 安装方法
+
 ```powershell
 yarn add https://github.com/masx200/deep-observe-agent-proxy.git
 ```
+
+# 使用方法
 
 ```js
 import deepobserveagent from "deep-observe-agent-proxy";
@@ -17,3 +21,11 @@ observable.qqqqq = {};
 observable.push("11", []);
 observable[0] = "hhhhhh";
 ```
+
+# 关于 Proxy
+
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Proxy
+
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Proxy/handler/set
+
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Proxy/handler/get
