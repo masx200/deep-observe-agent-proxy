@@ -1,6 +1,8 @@
 "use strict";
 export function isvalidobject(a) {
-  return a instanceof Object && typeof a === "object";
+  return (
+    (a instanceof Object && typeof a === "object") || typeof a === "function"
+  );
 }
 export default function observedeepagent(target, callback) {
   if (typeof Proxy !== "function") {
