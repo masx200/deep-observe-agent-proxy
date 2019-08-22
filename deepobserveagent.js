@@ -5,6 +5,9 @@ function isvalidobject(a) {
   );
 }
 export default function observedeepagent(target, callback) {
+  if (typeof callback !== "function") {
+    throw Error("callback not defined!");
+  }
   if (typeof Proxy !== "function") {
     setTimeout(() => {
       throw Error("不支持Proxy!");
