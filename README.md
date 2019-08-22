@@ -9,10 +9,11 @@ yarn add https://github.com/masx200/deep-observe-agent-proxy.git
 ```js
 import deepobserveagent from "deep-observe-agent-proxy";
 var a = [{ 0: "1111111a" }, 1, true, [{ bbbb: "ekkk" }, 10000]];
-function callback(t, k, v) {
-  console.log(t, k, v);
+function callback(target, key, newvalue, oldvalue) {
+  console.log(target, key, newvalue, oldvalue);
 }
 var observable = deepobserveagent(a, callback);
 observable.qqqqq = {};
 observable.push("11", []);
+observable[0] = "hhhhhh";
 ```
