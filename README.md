@@ -1,6 +1,6 @@
 # deep-observe-agent-proxy
 
-使用 `Proxy` 实现对 `Object` 的深度观察,检测跟踪对象深层次的属性的变化的`javascript`小工具
+使用 `Proxy` 实现对 `Object` 的深度观察,检测跟踪对象深层次的属性的变化的`javascript`小工具,可以检测到对象本来不存在的属性的添加
 
 ```powershell
 yarn add https://github.com/masx200/deep-observe-agent-proxy.git
