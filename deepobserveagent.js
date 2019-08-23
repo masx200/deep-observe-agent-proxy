@@ -94,8 +94,9 @@ export default function observedeepagent(target, callback) {
               callback(t, k, v, t[k]);
             }
 
-            Reflect.set(t, k, v);
-            return true;
+            return Reflect.set(t, k, v);
+            // return true;
+            /* Uncaught TypeError: 'set' on proxy: trap returned truish for property 'prototype' which exists in the proxy target as a non-configurable and non-writable data property with a different value */
           },
 
           /* 
