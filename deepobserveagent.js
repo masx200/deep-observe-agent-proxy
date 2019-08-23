@@ -8,7 +8,7 @@ export default function observedeepagent(target, callback) {
   if (typeof callback !== "function") {
     //throw Error("callback not defined!");
     // setTimeout(() => {
-    throw Error("observe callback is invalid");
+    throw Error("observe callback is invalid function !");
     // }, 0);
 
     // callback(t, k, v);
