@@ -30,6 +30,10 @@ observable[0] = "hhhhhh";
  (6) [{…}, 1, true, Array(2), "11", Array(0), qqqqq: {…}]0: "hhhhhh"1: 12: true3: (2) [{…}, 10000]4: "11"5: []qqqqq: {}length: 6__proto__: Array(0) "0" "hhhhhh" {0: "1111111a"}
 
 */
+
+observable.sort();
+
+observable.reverse();
 ```
 
 # 关于 Proxy
