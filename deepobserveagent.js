@@ -104,9 +104,9 @@ export default function observedeepagent(target, callback) {
     
     如果要访问的目标属性是不可写以及不可配置的，则返回的值必须与该目标属性的值相同。
     如果要访问的目标属性没有配置访问方法，即get方法是undefined的，则返回值必须为undefined。 */
-          get(t, k) {
+          get(t, k, r) {
             // console.log("get", [t, k]);
-            var value = Reflect.get(t, k);
+            var value = Reflect.get(t, k, r);
             if (isvalidobject(value)) {
               var descripter = Reflect.getOwnPropertyDescriptor(t, k);
               /* descripter  可能是undefined */
