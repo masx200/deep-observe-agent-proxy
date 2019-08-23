@@ -7,6 +7,10 @@
 ```powershell
 yarn add https://github.com/masx200/deep-observe-agent-proxy.git
 ```
+或者
+```powershell
+cnpm install  https://github.com/masx200/deep-observe-agent-proxy.git --save
+```
 
 # 使用方法
 
