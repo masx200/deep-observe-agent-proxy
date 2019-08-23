@@ -123,8 +123,9 @@ export default function observedeepagent(target, callback) {
               } else {
                 return observedeepagent(value, callback);
               }
+            } else {
+              return value;
             }
-            return value;
           }
         });
       })();
