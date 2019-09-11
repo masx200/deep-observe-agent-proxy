@@ -19,8 +19,8 @@ cnpm install  https://github.com/masx200/deep-observe-agent-proxy.git --save
 ```js
 import deepobserveagent from "deep-observe-agent-proxy";
 var a = [{ 0: "1111111a" }, 1, true, [{ bbbb: "ekkk" }, 10000]];
-function callback(target, key, newvalue, oldvalue) {
-  console.log(target, key, newvalue, oldvalue);
+function callback(target, patharray, newvalue, oldvalue) {
+  console.log(target, patharry, newvalue, oldvalue);
 }
 var observable = deepobserveagent(a, callback);
 observable.qqqqq = {};
