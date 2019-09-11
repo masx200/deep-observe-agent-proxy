@@ -30,7 +30,7 @@ interface callback {
 function deepobserveaddpath(
   target: Object | Function,
   callback: Function,
-  patharray = [],
+  patharray: Array<any> = [],
   ancestor = target
 ): any {
   if (typeof callback !== "function") {
@@ -93,7 +93,7 @@ function deepobserveaddpath(
           return Reflect.defineProperty(target, p, a);
         },
         deleteProperty(t, p) {
-          callback(ancestor, patharray.concat(p), undefined, target[p]);
+          callback(ancestor, [...patharray, p], undefined, target[p]);
           return Reflect.deleteProperty(target, p);
         },
         ownKeys(/*  t*/) {
@@ -157,7 +157,12 @@ function deepobserveaddpath(
           // console.log("set", [t, k, v]);
           if (typeof callback === "function") {
             //throw Error("callback not defined!");
-            callback(ancestor, patharray.concat(k), v, target[k]);
+            callback(
+              ancestor,
+              [...patharray, k] /* patharray.concat(k) */,
+              v,
+              target[k]
+            );
           }
 
           return Reflect.set(target, k, v);
@@ -191,7 +196,8 @@ function deepobserveaddpath(
             return deepobserveaddpath(
               value,
               callback,
-              patharray.concat(k),
+              [...patharray, k],
+              //  patharray.concat(k),
               target
             );
             // }

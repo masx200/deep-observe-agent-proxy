@@ -4,8 +4,11 @@
     "target": "esnext",
     "jsx": "preserve",
     "removeComments": true,
-    "outFile": "deepobserveagent.js",
-    "sourceMap": true
+
+    "outDir": "./",
+    "allowJs": true,
+    "sourceMap": true,
+    "strictNullChecks": true
   },
   "exclude": ["node_modules", "**/node_modules/*"]
 }

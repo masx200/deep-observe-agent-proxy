@@ -1,11 +1,13 @@
 {
     "name": "deep-observe-agent-proxy",
-    "version": "1.0.2",
+    "version": "1.1.0",
     "description": "使用Proxy实现对Object的深度观察,检测跟踪对象属性的变化的小工具",
     "main": "deepobserveagent.js",
     "module": "deepobserveagent.js",
     "types": "deepobserveagent.ts",
-    "scripts": {},
+    "scripts": {
+        "build": "tsc -b tsconfig.json"
+    },
     "repository": "git+https://github.com/masx200/deep-observe-agent-proxy.git",
     "keywords": [],
     "author": "masx200 <34191203+masx200@users.noreply.github.com>",
