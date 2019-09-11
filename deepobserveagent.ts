@@ -31,7 +31,7 @@ function deepobserveaddpath(
   target: Object | Function,
   callback: Function,
   patharray: Array<any> = [],
-  ancestor = target
+  ancestor:Object | Function = target
 ): any {
   if (typeof callback !== "function") {
     //throw Error("callback not defined!");
