@@ -2,7 +2,10 @@
   "compilerOptions": {
     "module": "esnext",
     "target": "esnext",
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "removeComments": true,
+    "outFile": "deepobserveagent.js",
+    "sourceMap": true
   },
   "exclude": ["node_modules", "**/node_modules/*"]
 }
