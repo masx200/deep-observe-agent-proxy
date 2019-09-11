@@ -13,6 +13,9 @@ yarn add https://github.com/masx200/deep-observe-agent-proxy.git
 ```powershell
 cnpm install  https://github.com/masx200/deep-observe-agent-proxy.git --save
 ```
+# API
+
+function deepobserveagent(target:Object|Function, callback:Function):Proxy;
 
 # 使用方法
 
