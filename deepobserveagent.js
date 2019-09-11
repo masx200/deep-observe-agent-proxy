@@ -1,14 +1,15 @@
 "use strict";
-function isvalidobject(a) {
-  return (
-    (a instanceof Object && typeof a === "object") || typeof a === "function"
-  );
+function isobject(a) {
+  return typeof a === "object" && a !== null;
+}
+function isfunction(a) {
+  return typeof a === "function";
 }
 export default function observedeepagent(target, callback) {
   if (typeof callback !== "function") {
     //throw Error("callback not defined!");
     // setTimeout(() => {
-    throw Error("observe callback is invalid function !");
+    throw Error("observe callback is not valid function !");
     // }, 0);
 
     // callback(t, k, v);
@@ -19,10 +20,17 @@ export default function observedeepagent(target, callback) {
     }, 0);
     return target;
   } else {
-    if (isvalidobject(target)) {
+    if (isfunction(target) || isobject(target)) {
       //
 
-      return (() => {
+      let forkobj;
+      if (isobject(target)) {
+        forkobj = {};
+      } else {
+        forkobj = () => {};
+      }
+      Reflect.setPrototypeOf(forkobj, null);
+      return (forkobj => {
         // function createfork(target) {
         //   var noneobj;
         //   if (typeof target === "function") {
@@ -58,10 +66,42 @@ export default function observedeepagent(target, callback) {
         //   return new Proxy(noneobj, forkhandler);
         // }
 
-        const forkobj = target;
+        // const forkobj = Object.create(null);
         return new Proxy(forkobj, {
+          defineProperty(t, p, a) {
+            return Reflect.defineProperty(target, p, a);
+          },
+          deleteProperty(t, p) {
+            return Reflect.deleteProperty(target, p);
+          },
+          ownKeys(t) {
+            return Reflect.ownKeys(target);
+          },
+          has(t, p) {
+            return Reflect.has(target, p);
+          },
+          getPrototypeOf(t) {
+            return Reflect.getPrototypeOf(target);
+          },
+          setPrototypeOf(t, v) {
+            return Reflect.setPrototypeOf(target, v);
+          },
+          construct(t, argumentslist) {
+            return Reflect.construct(target, argumentslist);
+          },
+          apply(t, thisarg, argarray) {
+            return Reflect.apply(target, thisarg, argarray);
+          },
           /* TypeError: 'get' on proxy: property 'prototype' is a read-only and non-configurable data property on the proxy target but the proxy did not return its actual value (expected '[object Symbol]' but got '[object Object]') */
-          // getOwnPropertyDescriptor(t, k) {
+          getOwnPropertyDescriptor(t, k) {
+            var descripter = Reflect.getOwnPropertyDescriptor(target, k);
+            if (descripter) {
+              descripter.configurable = true;
+              return descripter;
+            } else {
+              return;
+            }
+          },
           //   return {
           //     ...Reflect.getOwnPropertyDescriptor(t, k),
           //     ...{ configurable: true, writable: true }
@@ -91,10 +131,10 @@ export default function observedeepagent(target, callback) {
             // console.log("set", [t, k, v]);
             if (typeof callback === "function") {
               //throw Error("callback not defined!");
-              callback(t, k, v, t[k]);
+              callback(target, k, v, target[k]);
             }
 
-            return Reflect.set(t, k, v);
+            return Reflect.set(target, k, v);
             // return true;
             /* Uncaught TypeError: 'set' on proxy: trap returned truish for property 'prototype' which exists in the proxy target as a non-configurable and non-writable data property with a different value */
           },
@@ -105,31 +145,31 @@ export default function observedeepagent(target, callback) {
     
     如果要访问的目标属性是不可写以及不可配置的，则返回的值必须与该目标属性的值相同。
     如果要访问的目标属性没有配置访问方法，即get方法是undefined的，则返回值必须为undefined。 */
-          get(t, k, r) {
+          get(t, k) {
             // console.log("get", [t, k]);
-            var value = Reflect.get(t, k, r);
-            if (isvalidobject(value)) {
-              var descripter = Reflect.getOwnPropertyDescriptor(t, k);
-              /* descripter  可能是undefined */
-              if (
-                descripter &&
-                descripter.writable === false &&
-                descripter.configurable === false
-              ) {
-                console.warn(
-                  `无法代理此属性!\n如果要访问的目标属性是不可写以及不可配置的，\n则返回的值必须与该目标属性的值相同。\n`,
-                  [t, k, value]
-                );
-                return value;
-              } else {
-                return observedeepagent(value, callback);
-              }
+            var value = Reflect.get(target, k);
+            if (isfunction(value) || isobject(value)) {
+              // var descripter = Reflect.getOwnPropertyDescriptor(t, k);
+              // /* descripter  可能是undefined */
+              // if (
+              //   descripter &&
+              //   descripter.writable === false &&
+              //   descripter.configurable === false
+              // ) {
+              //   console.warn(
+              //     `无法代理此属性!\n如果要访问的目标属性是不可写以及不可配置的，\n则返回的值必须与该目标属性的值相同。\n`,
+              //     [t, k, value]
+              //   );
+              //   return value;
+              // } else {
+              return observedeepagent(value, callback);
+              // }
             } else {
               return value;
             }
           }
         });
-      })();
+      })(forkobj);
     } else {
       return target;
     }
