@@ -13,18 +13,19 @@ yarn add https://github.com/masx200/deep-observe-agent-proxy.git
 ```powershell
 cnpm install  https://github.com/masx200/deep-observe-agent-proxy.git --save
 ```
+
 # API
 
 ```typescript
+function deepobserveagent(target: Object | Function, callback: Function): Proxy;
 
-
-function deepobserveagent(target:Object|Function, callback:Function):Proxy;
-
-
-function callback(target:Object|Function, patharray:Array, newvalue:any, oldvalue:any):void;
+function callback(
+  target: Object | Function,
+  patharray: Array,
+  newvalue: any,
+  oldvalue: any
+): void;
 ```
-
-
 
 # 使用方法
 
@@ -32,7 +33,7 @@ function callback(target:Object|Function, patharray:Array, newvalue:any, oldvalu
 import deepobserveagent from "deep-observe-agent-proxy";
 var a = [{ 0: "1111111a" }, 1, true, [{ bbbb: "ekkk" }, 10000]];
 function callback(target, patharray, newvalue, oldvalue) {
-  console.log(target, patharry, newvalue, oldvalue);
+  console.log(target, patharray, newvalue, oldvalue);
 }
 var observable = deepobserveagent(a, callback);
 observable.qqqqq = {};
