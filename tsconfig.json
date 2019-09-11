@@ -1,10 +1,16 @@
 {
   "compilerOptions": {
+
+"noUnusedLocals": true,
+
+		"noUnusedParameters": true,
+
     "module": "esnext",
     "target": "esnext",
     "jsx": "preserve",
     "removeComments": true,
-
+"pretty": true,
+"strict": true,
     "outDir": "./",
     "allowJs": true,
     "sourceMap": true,
