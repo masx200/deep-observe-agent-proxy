@@ -1,20 +1,38 @@
 "use strict";
 
-function isobject(a) {
+function isobject(a: any): boolean {
   return typeof a === "object" && a !== null;
 }
-function isfunction(a) {
+function isfunction(a: any): boolean {
   return typeof a === "function";
 }
 /* API
+function deepobserveagent(target: Object | Function, callback: callback): any;
 
-function deepobserveagent(target:Object|Function, callback:Function):Proxy;
-
-
-function callback(target:Object|Function, patharray:Array, newvalue:any, oldvalue:any):void;
+interface callback {
+  (
+    target: Object | Function,
+    patharray: Array<any>,
+    newvalue: any,
+    oldvalue: any
+  ): void;
+}
 
 */
-function deepobserveaddpath(target, callback, patharray = []) {
+interface callback {
+  (
+    target: Object | Function,
+    patharray: Array<any>,
+    newvalue: any,
+    oldvalue: any
+  ): void;
+}
+function deepobserveaddpath(
+  target: Object | Function,
+  callback: Function,
+  patharray = [],
+  ancestor = target
+): any {
   if (typeof callback !== "function") {
     //throw Error("callback not defined!");
     // setTimeout(() => {
@@ -26,7 +44,7 @@ function deepobserveaddpath(target, callback, patharray = []) {
   if (isfunction(target) || isobject(target)) {
     //
 
-    let forkobj;
+    let forkobj: Object | Function;
     if (isobject(target)) {
       forkobj = {};
     } else {
@@ -75,26 +93,30 @@ function deepobserveaddpath(target, callback, patharray = []) {
           return Reflect.defineProperty(target, p, a);
         },
         deleteProperty(t, p) {
-          callback(target, patharray.concat(p), undefined, target[k]);
+          callback(ancestor, patharray.concat(p), undefined, target[p]);
           return Reflect.deleteProperty(target, p);
         },
-        ownKeys(t) {
+        ownKeys(/*  t*/) {
           return Reflect.ownKeys(target);
         },
         has(t, p) {
           return Reflect.has(target, p);
         },
-        getPrototypeOf(t) {
+        getPrototypeOf(/* t */) {
           return Reflect.getPrototypeOf(target);
         },
         setPrototypeOf(t, v) {
           return Reflect.setPrototypeOf(target, v);
         },
         construct(t, argumentslist) {
-          return Reflect.construct(target, argumentslist);
+          if (typeof target === "function") {
+            return Reflect.construct(target, argumentslist);
+          }
         },
         apply(t, thisarg, argarray) {
-          return Reflect.apply(target, thisarg, argarray);
+          if (typeof target === "function") {
+            return Reflect.apply(target, thisarg, argarray);
+          }
         },
         /* TypeError: 'get' on proxy: property 'prototype' is a read-only and non-configurable data property on the proxy target but the proxy did not return its actual value (expected '[object Symbol]' but got '[object Object]') */
         getOwnPropertyDescriptor(t, k) {
@@ -135,7 +157,7 @@ function deepobserveaddpath(target, callback, patharray = []) {
           // console.log("set", [t, k, v]);
           if (typeof callback === "function") {
             //throw Error("callback not defined!");
-            callback(target, patharray.concat(k), v, target[k]);
+            callback(ancestor, patharray.concat(k), v, target[k]);
           }
 
           return Reflect.set(target, k, v);
@@ -183,7 +205,10 @@ function deepobserveaddpath(target, callback, patharray = []) {
     return target;
   }
 }
-export default function observedeepagent(target, callback) {
+export default function observedeepagent(
+  target: Object | Function,
+  callback: callback
+): any {
   if (typeof callback !== "function") {
     //throw Error("callback not defined!");
     // setTimeout(() => {
@@ -201,7 +226,7 @@ export default function observedeepagent(target, callback) {
 
   // else
   if (isfunction(target) || isobject(target)) {
-    return deepobserveaddpath(target, callback, []);
+    return deepobserveaddpath(target, callback, [], target);
   } else {
     return target;
   }

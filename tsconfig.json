@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "esnext",
+    "jsx": "preserve"
+  },
+  "exclude": ["node_modules", "**/node_modules/*"]
+}

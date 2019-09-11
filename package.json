@@ -4,6 +4,7 @@
     "description": "使用Proxy实现对Object的深度观察,检测跟踪对象属性的变化的小工具",
     "main": "deepobserveagent.js",
     "module": "deepobserveagent.js",
+    "types": "deepobserveagent.ts",
     "scripts": {},
     "repository": "git+https://github.com/masx200/deep-observe-agent-proxy.git",
     "keywords": [],
