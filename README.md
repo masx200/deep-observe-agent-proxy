@@ -35,25 +35,22 @@ interface callback {
 import deepobserveagent from "deep-observe-agent-proxy";
 var a = [{ 0: "1111111a" }, 1, true, [{ bbbb: "ekkk" }, 10000]];
 function callback(target, patharray, newvalue, oldvalue) {
-  console.log(target, patharray, newvalue, oldvalue);
+  console.log(
+{
+target, patharray, newvalue, oldvalue
+}
+);
 }
 var observable = deepobserveagent(a, callback);
 observable.qqqqq = {};
 observable.push("11", []);
-observable[0] = "hhhhhh";
+observable[1] = "hhhhhh";
 
 observable.sort();
 
 observable.reverse();
-/*
 
-(4) [{…}, 1, true, Array(2)]0: "hhhhhh"1: 12: true3: (2) [{…}, 10000]4: "11"5: []qqqqq: {}length: 6__proto__: Array(0) "qqqqq" {} undefined
-(4) [{…}, 1, true, Array(2), qqqqq: {…}] "4" "11" undefined
- (5) [{…}, 1, true, Array(2), "11", qqqqq: {…}] "5" [] undefined
- (6) [{…}, 1, true, Array(2), "11", Array(0), qqqqq: {…}]0: "hhhhhh"1: 12: true3: (2) [{…}, 10000]4: "11"5: []qqqqq: {}length: 6__proto__: Array(0) "length" 6 6
- (6) [{…}, 1, true, Array(2), "11", Array(0), qqqqq: {…}]0: "hhhhhh"1: 12: true3: (2) [{…}, 10000]4: "11"5: []qqqqq: {}length: 6__proto__: Array(0) "0" "hhhhhh" {0: "1111111a"}
-
-*/
+observable.qqqqq.wwww=2947992
 ```
 
 # 关于 Proxy
