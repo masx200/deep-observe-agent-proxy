@@ -52,6 +52,8 @@ observable.sort();
 observable.reverse();
 
 observable.qqqqq.wwww = 2947992;
+observable.bbbbbbbbbb = "qqqqqqqqqaaaa";
+Reflect.deleteProperty(observable, "bbbbbbbbbb");
 ```
 
 # 关于 Proxy
