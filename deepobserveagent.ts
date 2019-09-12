@@ -93,7 +93,14 @@ function deepobserveaddpath(
           return Reflect.defineProperty(target, p, a);
         },
         deleteProperty(t, p) {
-          callback(ancestor, [...patharray, p], undefined, target[p]);
+          callback(
+            ancestor,
+            [...patharray, p],
+            undefined,
+            Reflect.get(target, p)
+
+            //target[p]
+          );
           return Reflect.deleteProperty(target, p);
         },
         ownKeys(/*  t*/) {
@@ -161,7 +168,8 @@ function deepobserveaddpath(
               ancestor,
               [...patharray, k] /* patharray.concat(k) */,
               v,
-              target[k]
+              Reflect.get(target, k)
+              // target[k]
             );
           }
 
