@@ -29,9 +29,9 @@ interface callback {
 }
 function deepobserveaddpath(
   target: Object | Function,
-  callback: Function,
+  callback: callback,
   patharray: Array<any> = [],
-  ancestor:Object | Function = target
+  ancestor: Object | Function = target
 ): any {
   if (typeof callback !== "function") {
     //throw Error("callback not defined!");
