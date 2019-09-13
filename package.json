@@ -15,5 +15,8 @@
     "bugs": {
         "url": "https://github.com/masx200/deep-observe-agent-proxy/issues"
     },
+    "devDependencies": {
+        "typescript": "^3.6.3"
+    },
     "homepage": "https://github.com/masx200/deep-observe-agent-proxy#readme"
 }
