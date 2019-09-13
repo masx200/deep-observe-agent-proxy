@@ -17,7 +17,10 @@ cnpm install  https://github.com/masx200/deep-observe-agent-proxy.git --save
 # API
 
 ```typescript
-function deepobserveagent(target: Object | Function, callback: callback): any;
+function deepobserveagent(
+  target: Object | Function,
+  callback: callback
+): Object | Function;
 
 interface callback {
   (

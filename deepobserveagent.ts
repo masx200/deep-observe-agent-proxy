@@ -32,7 +32,7 @@ function deepobserveaddpath(
   callback: callback,
   patharray: Array<any> = [],
   ancestor: Object | Function = target
-): any {
+): Object | Function {
   if (typeof callback !== "function") {
     //throw Error("callback not defined!");
     // setTimeout(() => {
@@ -222,7 +222,7 @@ function deepobserveaddpath(
 export default function observedeepagent(
   target: Object | Function,
   callback: callback
-): any {
+): Object | Function {
   if (typeof callback !== "function") {
     //throw Error("callback not defined!");
     // setTimeout(() => {
