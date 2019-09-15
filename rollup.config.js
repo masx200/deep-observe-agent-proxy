@@ -11,6 +11,8 @@ const myterserplugin = terser({
     ascii_only: !0
   },
   compress: {
+    toplevel: true,
+    unused: true,
     drop_console: true,
     drop_debugger: true,
     pure_funcs: ["console.log"]

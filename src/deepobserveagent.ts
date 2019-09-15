@@ -1,5 +1,21 @@
 "use strict";
 const Reflect = window.Reflect;
+const {
+  apply,
+  construct,
+  defineProperty,
+  deleteProperty,
+  get,
+  getOwnPropertyDescriptor,
+  getPrototypeOf,
+  has,
+
+  isExtensible,
+  ownKeys,
+  preventExtensions,
+  set,
+  setPrototypeOf
+} = Reflect;
 function isobject(a: any): boolean {
   return typeof a === "object" && a !== null;
 }
@@ -50,7 +66,7 @@ function deepobserveaddpath(
     } else {
       forkobj = () => {};
     }
-    Reflect.setPrototypeOf(forkobj, null);
+    setPrototypeOf(forkobj, null);
     return (forkobj => {
       // function createfork(target) {
       //   var noneobj;
@@ -59,7 +75,7 @@ function deepobserveaddpath(
       //   } else if (typeof target === "object") {
       //     noneobj = {};
       //   }
-      //   Reflect.setPrototypeOf(noneobj, null);
+      //   setPrototypeOf(noneobj, null);
       //   if (noneobj.prototype) {
       //     noneobj.prototype = null;
       //   }
@@ -90,14 +106,14 @@ function deepobserveaddpath(
       // const forkobj = Object.create(null);
       return new Proxy(forkobj, {
         defineProperty(t, p, a) {
-          return Reflect.defineProperty(target, p, a);
+          return defineProperty(target, p, a);
         },
         deleteProperty(t, p) {
           callback(
             ancestor,
             [...patharray, p],
             undefined,
-            Reflect.get(target, p)
+            get(target, p)
 
             //target[p]
           );
@@ -107,27 +123,27 @@ function deepobserveaddpath(
           return Reflect.ownKeys(target);
         },
         has(t, p) {
-          return Reflect.has(target, p);
+          return has(target, p);
         },
         getPrototypeOf(/* t */) {
-          return Reflect.getPrototypeOf(target);
+          return getPrototypeOf(target);
         },
         setPrototypeOf(t, v) {
-          return Reflect.setPrototypeOf(target, v);
+          return setPrototypeOf(target, v);
         },
         construct(t, argumentslist) {
           if (typeof target === "function") {
-            return Reflect.construct(target, argumentslist);
+            return construct(target, argumentslist);
           }
         },
         apply(t, thisarg, argarray) {
           if (typeof target === "function") {
-            return Reflect.apply(target, thisarg, argarray);
+            return apply(target, thisarg, argarray);
           }
         },
         /* TypeError: 'get' on proxy: property 'prototype' is a read-only and non-configurable data property on the proxy target but the proxy did not return its actual value (expected '[object Symbol]' but got '[object Object]') */
         getOwnPropertyDescriptor(t, k) {
-          var descripter = Reflect.getOwnPropertyDescriptor(target, k);
+          var descripter = getOwnPropertyDescriptor(target, k);
           if (descripter) {
             descripter.configurable = true;
             return descripter;
@@ -136,7 +152,7 @@ function deepobserveaddpath(
           }
         },
         //   return {
-        //     ...Reflect.getOwnPropertyDescriptor(t, k),
+        //     ...getOwnPropertyDescriptor(t, k),
         //     ...{ configurable: true, writable: true }
         //   };
         // },
@@ -168,12 +184,12 @@ function deepobserveaddpath(
               ancestor,
               [...patharray, k] /* patharray.concat(k) */,
               v,
-              Reflect.get(target, k)
+              get(target, k)
               // target[k]
             );
           }
 
-          return Reflect.set(target, k, v);
+          return set(target, k, v);
           // return true;
           /* Uncaught TypeError: 'set' on proxy: trap returned truish for property 'prototype' which exists in the proxy target as a non-configurable and non-writable data property with a different value */
         },
@@ -186,9 +202,9 @@ function deepobserveaddpath(
   如果要访问的目标属性没有配置访问方法，即get方法是undefined的，则返回值必须为undefined。 */
         get(t, k) {
           // console.log("get", [t, k]);
-          var value = Reflect.get(target, k);
+          var value = get(target, k);
           if (isfunction(value) || isobject(value)) {
-            // var descripter = Reflect.getOwnPropertyDescriptor(t, k);
+            // var descripter = getOwnPropertyDescriptor(t, k);
             // /* descripter  可能是undefined */
             // if (
             //   descripter &&
@@ -233,8 +249,8 @@ export default function observedeepagent(
   }
   if (typeof Proxy !== "function") {
     //setTimeout(() => {
-      throw Error("Proxy unsupported!");
-   // }, 0);
+    throw Error("Proxy unsupported!");
+    // }, 0);
     return target;
   }
 

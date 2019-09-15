@@ -1,4 +1,5 @@
 const Reflect = window.Reflect;
+const { apply, construct, defineProperty, deleteProperty, get, getOwnPropertyDescriptor, getPrototypeOf, has, isExtensible, ownKeys, preventExtensions, set, setPrototypeOf } = Reflect;
 function isobject(a) {
     return typeof a === "object" && a !== null;
 }
@@ -7,7 +8,7 @@ function isfunction(a) {
 }
 function deepobserveaddpath(target, callback, patharray = [], ancestor = target) {
     if (typeof callback !== "function") {
-        throw Error("observe callback is not valid function !");
+        throw Error("observe callback invalid !");
     }
     if (isfunction(target) || isobject(target)) {
         let forkobj;
@@ -17,40 +18,40 @@ function deepobserveaddpath(target, callback, patharray = [], ancestor = target)
         else {
             forkobj = () => { };
         }
-        Reflect.setPrototypeOf(forkobj, null);
+        setPrototypeOf(forkobj, null);
         return (forkobj => {
             return new Proxy(forkobj, {
                 defineProperty(t, p, a) {
-                    return Reflect.defineProperty(target, p, a);
+                    return defineProperty(target, p, a);
                 },
                 deleteProperty(t, p) {
-                    callback(ancestor, [...patharray, p], undefined, Reflect.get(target, p));
+                    callback(ancestor, [...patharray, p], undefined, get(target, p));
                     return Reflect.deleteProperty(target, p);
                 },
                 ownKeys() {
                     return Reflect.ownKeys(target);
                 },
                 has(t, p) {
-                    return Reflect.has(target, p);
+                    return has(target, p);
                 },
                 getPrototypeOf() {
-                    return Reflect.getPrototypeOf(target);
+                    return getPrototypeOf(target);
                 },
                 setPrototypeOf(t, v) {
-                    return Reflect.setPrototypeOf(target, v);
+                    return setPrototypeOf(target, v);
                 },
                 construct(t, argumentslist) {
                     if (typeof target === "function") {
-                        return Reflect.construct(target, argumentslist);
+                        return construct(target, argumentslist);
                     }
                 },
                 apply(t, thisarg, argarray) {
                     if (typeof target === "function") {
-                        return Reflect.apply(target, thisarg, argarray);
+                        return apply(target, thisarg, argarray);
                     }
                 },
                 getOwnPropertyDescriptor(t, k) {
-                    var descripter = Reflect.getOwnPropertyDescriptor(target, k);
+                    var descripter = getOwnPropertyDescriptor(target, k);
                     if (descripter) {
                         descripter.configurable = true;
                         return descripter;
@@ -61,12 +62,12 @@ function deepobserveaddpath(target, callback, patharray = [], ancestor = target)
                 },
                 set(t, k, v) {
                     if (typeof callback === "function") {
-                        callback(ancestor, [...patharray, k], v, Reflect.get(target, k));
+                        callback(ancestor, [...patharray, k], v, get(target, k));
                     }
-                    return Reflect.set(target, k, v);
+                    return set(target, k, v);
                 },
                 get(t, k) {
-                    var value = Reflect.get(target, k);
+                    var value = get(target, k);
                     if (isfunction(value) || isobject(value)) {
                         return deepobserveaddpath(value, callback, [...patharray, k], target);
                     }
@@ -86,9 +87,7 @@ function observedeepagent(target, callback) {
         throw Error("observe callback is not valid function !");
     }
     if (typeof Proxy !== "function") {
-        setTimeout(() => {
-            throw Error("不支持Proxy!");
-        }, 0);
+        throw Error("Proxy unsupported!");
         return target;
     }
     if (isfunction(target) || isobject(target)) {
