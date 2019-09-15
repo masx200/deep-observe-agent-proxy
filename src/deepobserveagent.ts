@@ -36,7 +36,7 @@ function deepobserveaddpath(
   if (typeof callback !== "function") {
     //throw Error("callback not defined!");
     // setTimeout(() => {
-    throw Error("observe callback is not valid function !");
+    throw Error("observe callback invalid !");
     // }, 0);
 
     // callback(t, k, v);
