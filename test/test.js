@@ -1,4 +1,4 @@
-import deepobserveagent from "../deepobserveagent.js";
+import deepobserveagent from "../dist/index.js";
 var a = [{ 0: "1111111a" }, 1, true, [{ bbbb: "ekkk" }, 10000]];
 function callback(target, patharray, newvalue, oldvalue) {
   console.log({

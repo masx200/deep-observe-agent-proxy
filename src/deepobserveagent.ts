@@ -1,5 +1,5 @@
 "use strict";
-
+const Reflect = window.Reflect;
 function isobject(a: any): boolean {
   return typeof a === "object" && a !== null;
 }

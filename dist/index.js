@@ -1,4 +1,4 @@
-"use strict";
+const Reflect = window.Reflect;
 function isobject(a) {
     return typeof a === "object" && a !== null;
 }
@@ -81,7 +81,7 @@ function deepobserveaddpath(target, callback, patharray = [], ancestor = target)
         return target;
     }
 }
-export default function observedeepagent(target, callback) {
+function observedeepagent(target, callback) {
     if (typeof callback !== "function") {
         throw Error("observe callback is not valid function !");
     }
@@ -98,4 +98,6 @@ export default function observedeepagent(target, callback) {
         return target;
     }
 }
-//# sourceMappingURL=deepobserveagent.js.map
+
+export default observedeepagent;
+//# sourceMappingURL=index.js.map

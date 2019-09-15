@@ -12,6 +12,6 @@
     "sourceMap": true,
     "strictNullChecks": true
   },
-  "include": ["*.ts"],
+  "include": ["*.ts", "src/deepobserveagent.ts"],
   "exclude": ["node_modules", "**/node_modules/*"]
 }

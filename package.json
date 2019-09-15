@@ -2,11 +2,11 @@
     "name": "deep-observe-agent-proxy",
     "version": "1.1.0",
     "description": "使用Proxy实现对Object的深度观察,检测跟踪对象属性的变化的小工具",
-    "main": "deepobserveagent.js",
-    "module": "deepobserveagent.js",
-    "types": "deepobserveagent.ts",
+    "main": "dist/index.min.js",
+    "module": "dist/index.min.js",
+    "types": "src/index.ts",
     "scripts": {
-        "build": "tsc -b tsconfig.json"
+        "build": "rollup -c  rollup.config.js"
     },
     "repository": "git+https://github.com/masx200/deep-observe-agent-proxy.git",
     "keywords": [],
@@ -16,7 +16,14 @@
         "url": "https://github.com/masx200/deep-observe-agent-proxy/issues"
     },
     "devDependencies": {
-        "typescript": "^3.6.3"
+        "rollup": "^1.21.2",
+        "typescript": "^3.6.3",
+        "rollup-plugin-commonjs": "^10.1.0",
+        "rollup-plugin-json": "^4.0.0",
+        "rollup-plugin-node-resolve": "^5.2.0",
+        "rollup-plugin-terser": "^5.1.2",
+        "rollup-plugin-typescript": "^1.0.1",
+        "tslib": "^1.10.0"
     },
     "homepage": "https://github.com/masx200/deep-observe-agent-proxy#readme"
 }
