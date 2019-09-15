@@ -232,9 +232,9 @@ export default function observedeepagent(
     // callback(t, k, v);
   }
   if (typeof Proxy !== "function") {
-    setTimeout(() => {
+    //setTimeout(() => {
       throw Error("Proxy unsupported!");
-    }, 0);
+   // }, 0);
     return target;
   }
 
