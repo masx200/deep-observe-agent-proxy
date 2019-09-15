@@ -233,7 +233,7 @@ export default function observedeepagent(
   }
   if (typeof Proxy !== "function") {
     setTimeout(() => {
-      throw Error("不支持Proxy!");
+      throw Error("Proxy unsupported!");
     }, 0);
     return target;
   }
