@@ -1,6 +1,7 @@
 "use strict";
 const Reflect = window.Reflect;
 const {
+ownKeys,deleteProperty,
   apply,
   construct,
   defineProperty,
@@ -113,10 +114,10 @@ function deepobserveaddpath(
 
             //target[p]
           );
-          return Reflect.deleteProperty(target, p);
+          return deleteProperty(target, p);
         },
         ownKeys(/*  t*/) {
-          return Reflect.ownKeys(target);
+          return ownKeys(target);
         },
         has(t, p) {
           return has(target, p);
