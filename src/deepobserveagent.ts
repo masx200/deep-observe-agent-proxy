@@ -57,14 +57,14 @@ function deepobserveaddpath(
   if (isfunction(target) || isobject(target)) {
     //
 
-    let forkobj: Object | Function;
+    let fakeobj: Object | Function;
     if (isobject(target)) {
-      forkobj = {};
+      fakeobj = {};
     } else {
-      forkobj = () => {};
+      fakeobj = () => {};
     }
-    setPrototypeOf(forkobj, null);
-    return (forkobj => {
+    setPrototypeOf(fakeobj, null);
+    return (fakeobj => {
       // function createfork(target) {
       //   var noneobj;
       //   if (typeof target === "function") {
@@ -100,8 +100,8 @@ function deepobserveaddpath(
       //   return new Proxy(noneobj, forkhandler);
       // }
 
-      // const forkobj = Object.create(null);
-      return new Proxy(forkobj, {
+      // const fakeobj = Object.create(null);
+      return new Proxy(fakeobj, {
         defineProperty(t, p, a) {
           return defineProperty(target, p, a);
         },
@@ -227,7 +227,7 @@ function deepobserveaddpath(
           }
         }
       });
-    })(forkobj);
+    })(fakeobj);
   } else {
     return target;
   }
