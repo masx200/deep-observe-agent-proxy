@@ -1,5 +1,5 @@
 const Reflect = window.Reflect;
-const { apply, construct, defineProperty, deleteProperty, get, getOwnPropertyDescriptor, getPrototypeOf, has, isExtensible, ownKeys, preventExtensions, set, setPrototypeOf } = Reflect;
+const { apply, construct, defineProperty, get, getOwnPropertyDescriptor, getPrototypeOf, has, set, setPrototypeOf } = Reflect;
 function isobject(a) {
     return typeof a === "object" && a !== null;
 }
@@ -88,7 +88,6 @@ function observedeepagent(target, callback) {
     }
     if (typeof Proxy !== "function") {
         throw Error("Proxy unsupported!");
-        return target;
     }
     if (isfunction(target) || isobject(target)) {
         return deepobserveaddpath(target, callback, [], target);

@@ -1,4 +1,10 @@
 {
+  //"validate": ["javascript", "typescript"],
+  /* "parserOptions":{
+
+}, */
+  "plugins": ["@typescript-eslint"],
+  "parser": "@typescript-eslint/parser",
   "env": {
     "browser": true,
     "es6": true,
@@ -7,17 +13,98 @@
     "commonjs": true,
     "amd": true
   },
-  "extends": "eslint:recommended",
+  "extends": [
+    "prettier",
+    "prettier/@typescript-eslint",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/eslint-recommended"
+  ],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
   },
   "parserOptions": {
+    // "project": "./tsconfig.json",
     "ecmaVersion": 2019,
     "sourceType": "module",
     "ecmaFeatures": {
       "jsx": true
     }
   },
-  "rules": {}
+  "rules": {
+    "@typescript-eslint/camelcase": 0,
+    "@typescript-eslint/explicit-function-return-type": 0,
+    "@typescript-eslint/no-explicit-any": 0,
+    "no-empty": 0,
+    "@typescript-eslint/no-use-before-define": 0,
+    "no-useless-escape": 0,
+    "no-var": 0
+  }
+  //  "autoFixOnSave": true
 }
+
+/* 
+vscode编辑器设置eslint
+
+
+{
+    "editor.fontFamily": "Microsoft Yahei, Microsoft Yahei,Helvetica,Tahoma,Arial,PingFang SC,Hiragino Sans GB,Heiti SC,MicrosoftYaHei,WenQuanYi Micro Hei,sans-serif",
+    "editor.detectIndentation": false,
+    "window.zoomLevel": 1,
+    "terminal.integrated.rendererType": "dom",
+    "[html]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "editor.wordWrap": "bounded",
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "workbench.colorTheme": "Material Color",
+    "[xml]": {
+        "editor.defaultFormatter": "mikeburgh.xml-format"
+    },
+    "workbench.statusBar.feedback.visible": false,
+    "[css]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "vsicons.dontShowNewVersionMessage": true,
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[less]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "editor.formatOnSave": true,
+    "workbench.iconTheme": "Material Color",
+    "editor.fontSize": 15,
+    "editor.fontWeight": "bold",
+    "terminal.integrated.fontFamily": "monospace",
+    "debug.console.fontFamily": "Microsoft Yahei, Microsoft Yahei,Helvetica,Tahoma,Arial,PingFang SC,Hiragino Sans GB,Heiti SC,MicrosoftYaHei,WenQuanYi Micro Hei,sans-serif",
+    "sync.gist": "bda1b390f919289c4b0802a72d87c2ea",
+    "sync.autoUpload": true,
+    "[vue]": {},
+    "files.associations": {
+        "*.vue": "vue"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "files.autoSave": "off",
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "eslint.autoFixOnSave": true,
+    "eslint.packageManager": "yarn",
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        "typescript"
+    ]
+
+} */

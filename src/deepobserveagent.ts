@@ -4,15 +4,11 @@ const {
   apply,
   construct,
   defineProperty,
-  deleteProperty,
   get,
   getOwnPropertyDescriptor,
   getPrototypeOf,
   has,
 
-  isExtensible,
-  ownKeys,
-  preventExtensions,
   set,
   setPrototypeOf
 } = Reflect;
@@ -251,7 +247,7 @@ export default function observedeepagent(
     //setTimeout(() => {
     throw Error("Proxy unsupported!");
     // }, 0);
-    return target;
+    // return target;
   }
 
   // else
