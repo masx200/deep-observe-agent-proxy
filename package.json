@@ -1,9 +1,9 @@
 {
- 
-"publishConfig": { "registry": "https://npm.pkg.github.com/@masx200" },
-
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com/@masx200"
+    },
     "name": "deep-observe-agent-proxy",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "description": "使用Proxy实现对Object的深度观察,检测跟踪对象属性的变化的小工具",
     "main": "dist/index.js",
     "module": "dist/index.js",
