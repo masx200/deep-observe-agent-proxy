@@ -1,7 +1,8 @@
 "use strict";
 const Reflect = window.Reflect;
 const {
-ownKeys,deleteProperty,
+  ownKeys,
+  deleteProperty,
   apply,
   construct,
   defineProperty,
@@ -239,7 +240,7 @@ export default function observedeepagent(
   if (typeof callback !== "function") {
     //throw Error("callback not defined!");
     // setTimeout(() => {
-    throw Error("observe callback is not valid function !");
+    throw Error("observe callback  invalid function ");
     // }, 0);
 
     // callback(t, k, v);

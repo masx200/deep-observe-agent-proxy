@@ -1,5 +1,5 @@
 const Reflect = window.Reflect;
-const { apply, construct, defineProperty, get, getOwnPropertyDescriptor, getPrototypeOf, has, set, setPrototypeOf } = Reflect;
+const { ownKeys, deleteProperty, apply, construct, defineProperty, get, getOwnPropertyDescriptor, getPrototypeOf, has, set, setPrototypeOf } = Reflect;
 function isobject(a) {
     return typeof a === "object" && a !== null;
 }
@@ -11,25 +11,25 @@ function deepobserveaddpath(target, callback, patharray = [], ancestor = target)
         throw Error("observe callback invalid !");
     }
     if (isfunction(target) || isobject(target)) {
-        let forkobj;
+        let fakeobj;
         if (isobject(target)) {
-            forkobj = {};
+            fakeobj = {};
         }
         else {
-            forkobj = () => { };
+            fakeobj = () => { };
         }
-        setPrototypeOf(forkobj, null);
-        return (forkobj => {
-            return new Proxy(forkobj, {
+        setPrototypeOf(fakeobj, null);
+        return (fakeobj => {
+            return new Proxy(fakeobj, {
                 defineProperty(t, p, a) {
                     return defineProperty(target, p, a);
                 },
                 deleteProperty(t, p) {
                     callback(ancestor, [...patharray, p], undefined, get(target, p));
-                    return Reflect.deleteProperty(target, p);
+                    return deleteProperty(target, p);
                 },
                 ownKeys() {
-                    return Reflect.ownKeys(target);
+                    return ownKeys(target);
                 },
                 has(t, p) {
                     return has(target, p);
@@ -76,7 +76,7 @@ function deepobserveaddpath(target, callback, patharray = [], ancestor = target)
                     }
                 }
             });
-        })(forkobj);
+        })(fakeobj);
     }
     else {
         return target;
@@ -84,7 +84,7 @@ function deepobserveaddpath(target, callback, patharray = [], ancestor = target)
 }
 function observedeepagent(target, callback) {
     if (typeof callback !== "function") {
-        throw Error("observe callback is not valid function !");
+        throw Error("observe callback  invalid function ");
     }
     if (typeof Proxy !== "function") {
         throw Error("Proxy unsupported!");
