@@ -1,3 +1,6 @@
+function isArray(a) {
+    return Array.isArray(a);
+}
 const Reflect = window.Reflect;
 const { ownKeys, deleteProperty, apply, construct, defineProperty, get, getOwnPropertyDescriptor, getPrototypeOf, has, set, setPrototypeOf } = Reflect;
 function isobject(a) {
@@ -12,7 +15,7 @@ function deepobserveaddpath(target, callback, patharray = [], ancestor = target)
     }
     if (isfunction(target) || isobject(target)) {
         let fakeobj;
-        if (Array.isArray(target)) {
+        if (isArray(target)) {
             fakeobj = [];
         }
         else if (isfunction(target)) {
@@ -55,12 +58,17 @@ function deepobserveaddpath(target, callback, patharray = [], ancestor = target)
                 },
                 getOwnPropertyDescriptor(t, k) {
                     var descripter = getOwnPropertyDescriptor(target, k);
-                    if (descripter) {
-                        descripter.configurable = true;
+                    if (isArray(target) && k === "length") {
                         return descripter;
                     }
                     else {
-                        return;
+                        if (descripter) {
+                            descripter.configurable = true;
+                            return descripter;
+                        }
+                        else {
+                            return;
+                        }
                     }
                 },
                 set(t, k, v) {

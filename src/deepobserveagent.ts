@@ -1,3 +1,6 @@
+function isArray(a: any) {
+  return Array.isArray(a);
+}
 "use strict";
 const Reflect = window.Reflect;
 const {
@@ -59,8 +62,11 @@ function deepobserveaddpath(
     //
 
     let fakeobj: object | Function;
-    if (Array.isArray(target)) {
+    if (isArray(target)) {
       fakeobj = [];
+      /* VM462:1 Uncaught TypeError: 'getOwnPropertyDescriptor' on proxy: trap returned descriptor for property 'length' that is incompatible with the existing property in the proxy target
+    at Function.getOwnPropertyDescriptors (<anonymous>)
+    at <anonymous>:1:8 */
     } else if (isfunction(target)) {
       fakeobj = () => {};
     } else {
@@ -144,11 +150,15 @@ function deepobserveaddpath(
         /* TypeError: 'get' on proxy: property 'prototype' is a read-only and non-configurable data property on the proxy target but the proxy did not return its actual value (expected '[object Symbol]' but got '[object Object]') */
         getOwnPropertyDescriptor(t, k) {
           var descripter = getOwnPropertyDescriptor(target, k);
-          if (descripter) {
-            descripter.configurable = true;
+          if (isArray(target) && k === "length") {
             return descripter;
           } else {
-            return;
+            if (descripter) {
+              descripter.configurable = true;
+              return descripter;
+            } else {
+              return;
+            }
           }
         },
         //   return {
