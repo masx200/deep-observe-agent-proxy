@@ -33,20 +33,20 @@ interface callback {
 }
 
 */
-interface callback {
+interface Callback {
   (
-    target: Object | Function,
+    target: object | Function,
     patharray: Array<any>,
     newvalue: any,
     oldvalue: any
   ): void;
 }
 function deepobserveaddpath(
-  target: Object | Function,
-  callback: callback,
+  target: object | Function,
+  callback: Callback,
   patharray: Array<any> = [],
-  ancestor: Object | Function = target
-): Object | Function {
+  ancestor: object | Function = target
+): object | Function {
   if (typeof callback !== "function") {
     //throw Error("callback not defined!");
     // setTimeout(() => {
@@ -58,11 +58,13 @@ function deepobserveaddpath(
   if (isfunction(target) || isobject(target)) {
     //
 
-    let fakeobj: Object | Function;
-    if (isobject(target)) {
-      fakeobj = {};
-    } else {
+    let fakeobj: object | Function;
+    if (Array.isArray(target)) {
+      fakeobj = [];
+    } else if (isfunction(target)) {
       fakeobj = () => {};
+    } else {
+      fakeobj = {};
     }
     setPrototypeOf(fakeobj, null);
     return (fakeobj => {
@@ -234,9 +236,9 @@ function deepobserveaddpath(
   }
 }
 export default function observedeepagent(
-  target: Object | Function,
-  callback: callback
-): Object | Function {
+  target: object | Function,
+  callback: Callback
+): object | Function {
   if (typeof callback !== "function") {
     //throw Error("callback not defined!");
     // setTimeout(() => {

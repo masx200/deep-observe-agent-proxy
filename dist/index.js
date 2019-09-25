@@ -12,11 +12,14 @@ function deepobserveaddpath(target, callback, patharray = [], ancestor = target)
     }
     if (isfunction(target) || isobject(target)) {
         let fakeobj;
-        if (isobject(target)) {
-            fakeobj = {};
+        if (Array.isArray(target)) {
+            fakeobj = [];
+        }
+        else if (isfunction(target)) {
+            fakeobj = () => { };
         }
         else {
-            fakeobj = () => { };
+            fakeobj = {};
         }
         setPrototypeOf(fakeobj, null);
         return (fakeobj => {
