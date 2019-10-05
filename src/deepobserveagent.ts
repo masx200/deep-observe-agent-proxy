@@ -83,44 +83,19 @@ throw Error();
     }
     setPrototypeOf(fakeobj, null);
     return (fakeobj => {
-      // function createfork(target) {
-      //   var noneobj;
-      //   if (typeof target === "function") {
-      //     noneobj = function() {};
-      //   } else if (typeof target === "object") {
-      //     noneobj = {};
-      //   }
-      //   setPrototypeOf(noneobj, null);
-      //   if (noneobj.prototype) {
-      //     noneobj.prototype = null;
-      //   }
-      //   const forkhandler = {};
-      //   [
-      //     "defineProperty",
-      //     "deleteProperty",
-      //     "apply",
-      //     "construct",
-      //     "get",
-      //     "getOwnPropertyDescriptor",
-      //     "getPrototypeOf",
-      //     "has",
-      //     "isExtensible",
-      //     "ownKeys",
-      //     "preventExtensions",
-      //     "set",
-      //     "setPrototypeOf"
-      //   ].forEach(key => {
-      //     forkhandler[key] = function(...args) {
-      //       args[0] = target;
-      //       return Reflect[key](...args);
-      //     };
-      //   });
-      //   return new Proxy(noneobj, forkhandler);
-      // }
-
-      // const fakeobj = Object.create(null);
+      
       return new Proxy(fakeobj, {
         defineProperty(t, p, a) {
+
+callback(
+            ancestor,
+            [...patharray, p],
+//属性描述符的value或者getter
+         has(a,"value")  ?a.value:a.get() ,
+            get(target, p)
+
+            
+          );
           return defineProperty(target, p, a);
         },
         deleteProperty(t, p) {
