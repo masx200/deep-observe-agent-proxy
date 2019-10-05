@@ -50,11 +50,20 @@ function deepobserveaddpath(
   patharray: Array<any> = [],
   ancestor: object | Function = target
 ): object | Function {
-  if (typeof callback !== "function") {
+  if (
+!
+isfunction(callback)
+
+//typeof callback !== "function"
+
+) {
+console.error(callback)
+console.error("observe callback invalid !")
+throw Error();
+   
     //throw Error("callback not defined!");
     // setTimeout(() => {
-    throw Error("observe callback invalid !");
-    // }, 0);
+     // }, 0);
 
     // callback(t, k, v);
   }
@@ -249,7 +258,12 @@ export default function observedeepagent(
   target: object | Function,
   callback: Callback
 ): object | Function {
-  if (typeof callback !== "function") {
+  if (
+!
+isfunction(callback)
+//typeof callback !== "function"
+
+) {
 console.error(callback)
 console.error("observe callback  invalid function !")
 throw Error();
@@ -260,7 +274,12 @@ throw Error();
 
     // callback(t, k, v);
   }
-  if (typeof Proxy !== "function") {
+  if (
+!
+isfunction(Proxy)
+//typeof Proxy !== "function"
+
+) {
 console.error("Proxy unsupported!")
 throw Error();
 
