@@ -250,23 +250,29 @@ export default function observedeepagent(
   callback: Callback
 ): object | Function {
   if (typeof callback !== "function") {
+console.error(callback)
+console.error("observe callback  invalid function !")
+throw Error();
+ 
     //throw Error("callback not defined!");
     // setTimeout(() => {
-    throw Error("observe callback  invalid function ");
-    // }, 0);
+       // }, 0);
 
     // callback(t, k, v);
   }
   if (typeof Proxy !== "function") {
+console.error("Proxy unsupported!")
+throw Error();
+
     //setTimeout(() => {
-    throw Error("Proxy unsupported!");
+    
     // }, 0);
     // return target;
   }
 
   // else
   if (isfunction(target) || isobject(target)) {
-    return deepobserveaddpath(target, callback, [], target);
+    return deepobserveaddpath(target, callback/*, [], target*/);
   } else {
     return target;
   }
