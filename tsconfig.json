@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+"declaration":true,
     "noUnusedLocals": true,
     "module": "esnext",
     "target": "esnext",
@@ -12,6 +13,6 @@
     "sourceMap": true,
     "strictNullChecks": true
   },
-  "include": ["*.ts", "src/deepobserveagent.ts"],
-  "exclude": ["node_modules", "**/node_modules/*"]
+ // "include": ["*.ts", "src/deepobserveagent.ts"],
+ // "exclude": ["node_modules", "**/node_modules/*"]
 }
