@@ -147,12 +147,18 @@ throw Error();
           return setPrototypeOf(target, v);
         },
         construct(t, argumentslist) {
-          if (typeof target === "function") {
+          if (
+isfunction(target)
+//typeof target === "function"
+) {
             return construct(target, argumentslist);
           }
         },
         apply(t, thisarg, argarray) {
-          if (typeof target === "function") {
+          if (
+isfunction(target)
+//typeof target === "function"
+) {
             return apply(target, thisarg, argarray);
           }
         },
@@ -197,7 +203,10 @@ throw Error();
   */
         set(t, k, v) {
           // console.log("set", [t, k, v]);
-          if (typeof callback === "function") {
+          if (
+isfunction(callback)
+//typeof callback === "function"
+) {
             //throw Error("callback not defined!");
             callback(
               ancestor,
