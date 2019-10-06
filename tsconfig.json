@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-"declaration":true,
+    "declarationDir": "./dist",
+    "declaration": true,
     "noUnusedLocals": true,
     "module": "esnext",
     "target": "esnext",
@@ -8,12 +9,14 @@
     "removeComments": true,
     "pretty": true,
     "strict": true,
-    "outDir": "./",
-    "allowJs": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    // "allowJs": true,
     "sourceMap": true,
     "strictNullChecks": true
   },
-"include":["*.ts"]
- // "include": ["*.ts", "src/deepobserveagent.ts"],
- // "exclude": ["node_modules", "**/node_modules/*"]
+  "include": ["*.ts", "./src/*.ts"],
+  "exclude": []
+  // "include": ["*.ts", "src/deepobserveagent.ts"],
+  // "exclude": ["node_modules", "**/node_modules/*"]
 }

@@ -10,8 +10,10 @@ function isfunction(a) {
     return typeof a === "function";
 }
 function deepobserveaddpath(target, callback, patharray = [], ancestor = target) {
-    if (typeof callback !== "function") {
-        throw Error("observe callback invalid !");
+    if (!isfunction(callback)) {
+        console.error(callback);
+        console.error("observe callback invalid !");
+        throw Error();
     }
     if (isfunction(target) || isobject(target)) {
         let fakeobj;
@@ -19,89 +21,91 @@ function deepobserveaddpath(target, callback, patharray = [], ancestor = target)
             fakeobj = [];
         }
         else if (isfunction(target)) {
-            fakeobj = () => { };
+            fakeobj = (() => { });
         }
         else {
             fakeobj = {};
         }
         setPrototypeOf(fakeobj, null);
-        return (fakeobj => {
-            return new Proxy(fakeobj, {
-                defineProperty(t, p, a) {
-                    return defineProperty(target, p, a);
-                },
-                deleteProperty(t, p) {
-                    callback(ancestor, [...patharray, p], undefined, get(target, p));
-                    return deleteProperty(target, p);
-                },
-                ownKeys() {
-                    return ownKeys(target);
-                },
-                has(t, p) {
-                    return has(target, p);
-                },
-                getPrototypeOf() {
-                    return getPrototypeOf(target);
-                },
-                setPrototypeOf(t, v) {
-                    return setPrototypeOf(target, v);
-                },
-                construct(t, argumentslist) {
-                    if (typeof target === "function") {
-                        return construct(target, argumentslist);
-                    }
-                },
-                apply(t, thisarg, argarray) {
-                    if (typeof target === "function") {
-                        return apply(target, thisarg, argarray);
-                    }
-                },
-                getOwnPropertyDescriptor(t, k) {
-                    var descripter = getOwnPropertyDescriptor(target, k);
-                    if (isArray(target) && k === "length") {
+        return new Proxy(fakeobj, {
+            defineProperty(t, p, a) {
+                callback(ancestor, [...patharray, String(p)], has(a, "value") ? a.value : isfunction(a.get) ? a.get() : undefined, get(target, p));
+                return defineProperty(target, p, a);
+            },
+            deleteProperty(t, p) {
+                callback(ancestor, [...patharray, String(p)], undefined, get(target, p));
+                return deleteProperty(target, p);
+            },
+            ownKeys() {
+                return ownKeys(target);
+            },
+            has(t, p) {
+                return has(target, p);
+            },
+            getPrototypeOf() {
+                return getPrototypeOf(target);
+            },
+            setPrototypeOf(t, v) {
+                return setPrototypeOf(target, v);
+            },
+            construct(t, argumentslist) {
+                if (isfunction(target)) {
+                    return construct(target, argumentslist);
+                }
+            },
+            apply(t, thisarg, argarray) {
+                if (isfunction(target)) {
+                    return apply(target, thisarg, argarray);
+                }
+            },
+            getOwnPropertyDescriptor(t, k) {
+                var descripter = getOwnPropertyDescriptor(target, k);
+                if (isArray(target) && k === "length") {
+                    return descripter;
+                }
+                else {
+                    if (descripter) {
+                        descripter.configurable = true;
                         return descripter;
                     }
                     else {
-                        if (descripter) {
-                            descripter.configurable = true;
-                            return descripter;
-                        }
-                        else {
-                            return;
-                        }
-                    }
-                },
-                set(t, k, v) {
-                    if (typeof callback === "function") {
-                        callback(ancestor, [...patharray, k], v, get(target, k));
-                    }
-                    return set(target, k, v);
-                },
-                get(t, k) {
-                    var value = get(target, k);
-                    if (isfunction(value) || isobject(value)) {
-                        return deepobserveaddpath(value, callback, [...patharray, k], target);
-                    }
-                    else {
-                        return value;
+                        return;
                     }
                 }
-            });
-        })(fakeobj);
+            },
+            set(t, k, v) {
+                if (isfunction(callback)) {
+                    callback(ancestor, [...patharray, String(k)], v, get(target, k));
+                }
+                return set(target, k, v);
+            },
+            get(t, k) {
+                var value = get(target, k);
+                if (isfunction(value) || isobject(value)) {
+                    return deepobserveaddpath(value, callback, [...patharray, String(k)], target);
+                }
+                else {
+                    return value;
+                }
+            }
+        });
     }
     else {
         return target;
     }
 }
 function observedeepagent(target, callback) {
-    if (typeof callback !== "function") {
-        throw Error("observe callback  invalid function ");
+    if (!isfunction(callback)) {
+        console.error(callback);
+        console.error("observe callback  invalid function !");
+        throw Error();
     }
-    if (typeof Proxy !== "function") {
-        throw Error("Proxy unsupported!");
+    if (!isfunction(Proxy)) {
+        console.error("Proxy unsupported!");
+        throw Error();
     }
     if (isfunction(target) || isobject(target)) {
-        return deepobserveaddpath(target, callback, [], target);
+        return deepobserveaddpath(target, callback);
     }
     else {
         return target;

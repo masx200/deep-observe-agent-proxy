@@ -1,16 +1,16 @@
 {
     "publishConfig": {
-        "registry": "https://npm.pkg.github.com/@masx200"
+        "registry": "https://npm.pkg.github.com/"
     },
-    "name": "deep-observe-agent-proxy",
-    "version": "1.1.4",
+    "name": "@masx200/deep-observe-agent-proxy",
+    "version": "1.1.5",
     "description": "使用Proxy实现对Object的深度观察,检测跟踪对象属性的变化的小工具",
     "main": "dist/index.js",
     "module": "dist/index.js",
-    "types": "src/index.ts",
-    "scripts": {"prettier":"prettier --parser=typescript --write *.ts"
-,
-        "build": "rollup -c  rollup.config.js"
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "prettier": "prettier --parser=typescript --write src/*.ts",
+        "build": "tsc && rollup -c  rollup.config.js"
     },
     "repository": "git+https://github.com/masx200/deep-observe-agent-proxy.git",
     "keywords": [],
@@ -20,7 +20,7 @@
         "url": "https://github.com/masx200/deep-observe-agent-proxy/issues"
     },
     "devDependencies": {
-"prettier": "^1.18.2",
+        "prettier": "^1.18.2",
         "eslint": "^6.4.0",
         "eslint-config-prettier": "^6.3.0",
         "@typescript-eslint/eslint-plugin": "^2.2.0",

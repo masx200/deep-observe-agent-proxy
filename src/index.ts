@@ -1,4 +1,4 @@
-function isArray(a: any) {
+function isArray(a: any): a is any[] {
   return Array.isArray(a);
 }
 "use strict";
@@ -20,7 +20,7 @@ const {
 function isobject(a: any): boolean {
   return typeof a === "object" && a !== null;
 }
-function isfunction(a: any): boolean {
+function isfunction(a: any): a is Function {
   return typeof a === "function";
 }
 /* API
@@ -36,128 +36,119 @@ interface callback {
 }
 
 */
-interface Callback {
-  (
-    target: object | Function,
-    patharray: Array<any>,
-    newvalue: any,
-    oldvalue: any
-  ): void;
+interface Callback<T extends object | Function | any[]> {
+  (target: T, patharray: Array<string>, newvalue: any, oldvalue: any): void;
 }
-function deepobserveaddpath(
-  target: object | Function,
-  callback: Callback,
-  patharray: Array<any> = [],
-  ancestor: object | Function = target
-): object | Function {
+function deepobserveaddpath<T extends object | Function | any[]>(
+  target: T,
+  callback: Callback<T>,
+  patharray: Array<string> = [],
+  ancestor = target
+): T {
   if (
-!
-isfunction(callback)
+    !isfunction(callback)
 
-//typeof callback !== "function"
+    //typeof callback !== "function"
+  ) {
+    console.error(callback);
+    console.error("observe callback invalid !");
+    throw Error();
 
-) {
-console.error(callback)
-console.error("observe callback invalid !")
-throw Error();
-   
     //throw Error("callback not defined!");
     // setTimeout(() => {
-     // }, 0);
+    // }, 0);
 
     // callback(t, k, v);
   }
   if (isfunction(target) || isobject(target)) {
     //
 
-    let fakeobj: object | Function;
+    let fakeobj: T;
+
     if (isArray(target)) {
-      fakeobj = [];
+      fakeobj = [] as T;
       /* VM462:1 Uncaught TypeError: 'getOwnPropertyDescriptor' on proxy: trap returned descriptor for property 'length' that is incompatible with the existing property in the proxy target
     at Function.getOwnPropertyDescriptors (<anonymous>)
     at <anonymous>:1:8 */
     } else if (isfunction(target)) {
-      fakeobj = () => {};
+      fakeobj = (() => {}) as T;
     } else {
-      fakeobj = {};
+      fakeobj = {} as T;
     }
+
     setPrototypeOf(fakeobj, null);
-    return (fakeobj => {
-      
-      return new Proxy(fakeobj, {
-        defineProperty(t, p, a) {
+    // return (fakeobj => {
+    return new Proxy(fakeobj, {
+      defineProperty(t, p, a) {
+        callback(
+          ancestor,
+          [...patharray, String(p)],
+          //属性描述符的value或者getter
+          has(a, "value") ? a.value : isfunction(a.get) ? a.get() : undefined,
+          get(target, p)
+        );
+        return defineProperty(target, p, a);
+      },
+      deleteProperty(t, p) {
+        callback(
+          ancestor,
+          [...patharray, String(p)],
+          undefined,
+          get(target, p)
 
-callback(
-            ancestor,
-            [...patharray, p],
-//属性描述符的value或者getter
-         has(a,"value")  ?a.value:a.get() ,
-            get(target, p)
-
-            
-          );
-          return defineProperty(target, p, a);
-        },
-        deleteProperty(t, p) {
-          callback(
-            ancestor,
-            [...patharray, p],
-            undefined,
-            get(target, p)
-
-            //target[p]
-          );
-          return deleteProperty(target, p);
-        },
-        ownKeys(/*  t*/) {
-          return ownKeys(target);
-        },
-        has(t, p) {
-          return has(target, p);
-        },
-        getPrototypeOf(/* t */) {
-          return getPrototypeOf(target);
-        },
-        setPrototypeOf(t, v) {
-          return setPrototypeOf(target, v);
-        },
-        construct(t, argumentslist) {
-          if (
-isfunction(target)
-//typeof target === "function"
-) {
-            return construct(target, argumentslist);
-          }
-        },
-        apply(t, thisarg, argarray) {
-          if (
-isfunction(target)
-//typeof target === "function"
-) {
-            return apply(target, thisarg, argarray);
-          }
-        },
-        /* TypeError: 'get' on proxy: property 'prototype' is a read-only and non-configurable data property on the proxy target but the proxy did not return its actual value (expected '[object Symbol]' but got '[object Object]') */
-        getOwnPropertyDescriptor(t, k) {
-          var descripter = getOwnPropertyDescriptor(target, k);
-          if (isArray(target) && k === "length") {
+          //target[p]
+        );
+        return deleteProperty(target, p);
+      },
+      ownKeys(/*  t*/) {
+        return ownKeys(target);
+      },
+      has(t, p) {
+        return has(target, p);
+      },
+      getPrototypeOf(/* t */) {
+        return getPrototypeOf(target);
+      },
+      setPrototypeOf(t, v) {
+        return setPrototypeOf(target, v);
+      },
+      construct(t, argumentslist) {
+        if (
+          isfunction(target)
+          //typeof target === "function"
+        ) {
+          return construct(target, argumentslist);
+        }
+      },
+      apply(t, thisarg, argarray) {
+        if (
+          isfunction(target)
+          //typeof target === "function"
+        ) {
+          return apply(target, thisarg, argarray);
+        }
+      },
+      /* TypeError: 'get' on proxy: property 'prototype' is a read-only and non-configurable data property on the proxy target but the proxy did not return its actual value (expected '[object Symbol]' but got '[object Object]') */
+      getOwnPropertyDescriptor(t, k) {
+        var descripter = getOwnPropertyDescriptor(target, k);
+        if (isArray(target) && k === "length") {
+          return descripter;
+        } else {
+          if (descripter) {
+            descripter.configurable = true;
             return descripter;
           } else {
-            if (descripter) {
-              descripter.configurable = true;
-              return descripter;
-            } else {
-              return;
-            }
+            return;
           }
-        },
-        //   return {
-        //     ...getOwnPropertyDescriptor(t, k),
-        //     ...{ configurable: true, writable: true }
-        //   };
-        // },
+        }
+      },
+      //   return {
+      //     ...getOwnPropertyDescriptor(t, k),
+      //     ...{ configurable: true, writable: true }
+      //   };
+      // },
 
-        /* 
+      /* 
           https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Proxy/handler/getOwnPropertyDescriptor
           如果下列不变量被违反，代理将抛出一个 TypeError：
   
@@ -168,7 +159,7 @@ isfunction(target)
   属性不能被报告为不可配置，如果它不作为目标对象的自身属性存在，或者作为目标对象的可配置的属性存在。
   Object.getOwnPropertyDescriptor（target）的结果可以使用 Object.defineProperty 应用于目标对象，也不会抛出异常。 */
 
-        /* https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Proxy/handler/set
+      /* https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Proxy/handler/set
   
   如果违背以下的约束条件，proxy会抛出一个TypeError:
   
@@ -176,106 +167,102 @@ isfunction(target)
   如果目标属性没有配置存储方法，即set方法是undefined的，则不能设置它的值。
   在严格模式下，若set方法返回false，则会抛出一个 TypeError 异常。
   */
-        set(t, k, v) {
-          // console.log("set", [t, k, v]);
-          if (
-isfunction(callback)
-//typeof callback === "function"
-) {
-            //throw Error("callback not defined!");
-            callback(
-              ancestor,
-              [...patharray, k] /* patharray.concat(k) */,
-              v,
-              get(target, k)
-              // target[k]
-            );
-          }
+      set(t, k, v) {
+        // console.log("set", [t, k, v]);
+        if (
+          isfunction(callback)
+          //typeof callback === "function"
+        ) {
+          //throw Error("callback not defined!");
+          callback(
+            ancestor,
+            [...patharray, String(k)] /* patharray.concat(k) */,
+            v,
+            get(target, k)
+            // target[k]
+          );
+        }
 
-          return set(target, k, v);
-          // return true;
-          /* Uncaught TypeError: 'set' on proxy: trap returned truish for property 'prototype' which exists in the proxy target as a non-configurable and non-writable data property with a different value */
-        },
+        return set(target, k, v);
+        // return true;
+        /* Uncaught TypeError: 'set' on proxy: trap returned truish for property 'prototype' which exists in the proxy target as a non-configurable and non-writable data property with a different value */
+      },
 
-        /* 
+      /* 
           https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Proxy/handler/get
           如果违背了以下的约束，proxy会抛出 TypeError:
   
   如果要访问的目标属性是不可写以及不可配置的，则返回的值必须与该目标属性的值相同。
   如果要访问的目标属性没有配置访问方法，即get方法是undefined的，则返回值必须为undefined。 */
-        get(t, k) {
-          // console.log("get", [t, k]);
-          var value = get(target, k);
-          if (isfunction(value) || isobject(value)) {
-            // var descripter = getOwnPropertyDescriptor(t, k);
-            // /* descripter  可能是undefined */
-            // if (
-            //   descripter &&
-            //   descripter.writable === false &&
-            //   descripter.configurable === false
-            // ) {
-            //   console.warn(
-            //     `无法代理此属性!\n如果要访问的目标属性是不可写以及不可配置的，\n则返回的值必须与该目标属性的值相同。\n`,
-            //     [t, k, value]
-            //   );
-            //   return value;
-            // } else {
-            return deepobserveaddpath(
-              value,
-              callback,
-              [...patharray, k],
-              //  patharray.concat(k),
-              target
-            );
-            // }
-          } else {
-            return value;
-          }
+      get(t, k) {
+        // console.log("get", [t, k]);
+        var value = get(target, k);
+        if (isfunction(value) || isobject(value)) {
+          // var descripter = getOwnPropertyDescriptor(t, k);
+          // /* descripter  可能是undefined */
+          // if (
+          //   descripter &&
+          //   descripter.writable === false &&
+          //   descripter.configurable === false
+          // ) {
+          //   console.warn(
+          //     `无法代理此属性!\n如果要访问的目标属性是不可写以及不可配置的，\n则返回的值必须与该目标属性的值相同。\n`,
+          //     [t, k, value]
+          //   );
+          //   return value;
+          // } else {
+          return deepobserveaddpath(
+            value,
+            callback,
+            [...patharray, String(k)],
+            //  patharray.concat(k),
+            target
+          );
+          // }
+        } else {
+          return value;
         }
-      });
-    })(fakeobj);
+      }
+    });
+    // })(fakeobj);
   } else {
     return target;
   }
 }
-export default function observedeepagent(
-  target: object | Function,
-  callback: Callback
-): object | Function {
+export default function observedeepagent<T extends object | Function | any[]>(
+  target: T,
+  callback: Callback<T>
+): T {
   if (
-!
-isfunction(callback)
-//typeof callback !== "function"
+    !isfunction(callback)
+    //typeof callback !== "function"
+  ) {
+    console.error(callback);
+    console.error("observe callback  invalid function !");
+    throw Error();
 
-) {
-console.error(callback)
-console.error("observe callback  invalid function !")
-throw Error();
- 
     //throw Error("callback not defined!");
     // setTimeout(() => {
-       // }, 0);
+    // }, 0);
 
     // callback(t, k, v);
   }
   if (
-!
-isfunction(Proxy)
-//typeof Proxy !== "function"
-
-) {
-console.error("Proxy unsupported!")
-throw Error();
+    !isfunction(Proxy)
+    //typeof Proxy !== "function"
+  ) {
+    console.error("Proxy unsupported!");
+    throw Error();
 
     //setTimeout(() => {
-    
+
     // }, 0);
     // return target;
   }
 
   // else
   if (isfunction(target) || isobject(target)) {
-    return deepobserveaddpath(target, callback/*, [], target*/);
+    return deepobserveaddpath(target, callback /*, [], target*/);
   } else {
     return target;
   }
