@@ -29,7 +29,7 @@ function observedeepagent<T extends object | Function | any[]>(
 # 使用方法
 
 ```js
-import deepobserveagent from "deep-observe-agent-proxy";
+import deepobserveagent from "@masx200/deep-observe-agent-proxy";
 var a = [{ 0: "1111111a" }, 1, true, [{ bbbb: "ekkk" }, 10000]];
 function callback(target, patharray, newvalue, oldvalue) {
   console.log({
