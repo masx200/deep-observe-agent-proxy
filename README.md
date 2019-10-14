@@ -26,7 +26,9 @@ function observedeepagent<T extends object | Function | any[]>(
 ): T;
 ```
 
-# 更新:新增对于 `Set` 和 `Map` 类型的变化监测
+# 更新:新增对于 `Set` 和 `Map` 类型的变化监测,
+
+# 更新:不代理监测 `Date` 和 `Promise`和`RegExp` 类型
 
 # 使用方法
 

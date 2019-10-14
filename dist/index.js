@@ -1,5 +1,14 @@
 const Setprototype = Set.prototype;
 const Mapprototype = Map.prototype;
+function ispromise(a) {
+    return a instanceof Promise;
+}
+function isdate(a) {
+    return a instanceof Date;
+}
+function isregexp(a) {
+    return a instanceof RegExp;
+}
 function isMap(a) {
     return a instanceof Map;
 }
@@ -22,6 +31,9 @@ function deepobserveaddpath(target, callback, patharray = [], ancestor = target)
         console.error(callback);
         console.error("observe callback invalid !");
         throw Error();
+    }
+    if (ispromise(target) || isregexp(target) || isdate(target)) {
+        return target;
     }
     if (isfunction(target) || isobject(target)) {
         let fakeobj;

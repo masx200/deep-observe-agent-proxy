@@ -1,5 +1,5 @@
 {
-  "version": "1.1.6",
+  "version": "1.2.0",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },
@@ -10,7 +10,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "prettier": "prettier --parser=typescript --write src/*.ts",
-    "build": "tsc && rollup -c  rollup.config.js"
+    "build": " rollup -c  rollup.config.js"
   },
   "repository": "git+https://github.com/masx200/deep-observe-agent-proxy.git",
   "keywords": [],
@@ -20,19 +20,21 @@
     "url": "https://github.com/masx200/deep-observe-agent-proxy/issues"
   },
   "devDependencies": {
-    "prettier": "^1.18.2",
-    "eslint": "^6.4.0",
-    "eslint-config-prettier": "^6.3.0",
+    "rollup-plugin-typescript2": "^0.24.3",
     "@typescript-eslint/eslint-plugin": "^2.2.0",
     "@typescript-eslint/parser": "^2.2.0",
+    "eslint": "^6.4.0",
+    "eslint-config-prettier": "^6.3.0",
+    "prettier": "^1.18.2",
     "rollup": "^1.21.2",
-    "typescript": "^3.6.3",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-json": "^4.0.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-terser": "^5.1.2",
     "rollup-plugin-typescript": "^1.0.1",
-    "tslib": "^1.10.0"
+    "tslib": "^1.10.0",
+    "typescript": "^3.6.3"
   },
-  "homepage": "https://github.com/masx200/deep-observe-agent-proxy#readme"
+  "homepage": "https://github.com/masx200/deep-observe-agent-proxy#readme",
+  "dependencies": {}
 }

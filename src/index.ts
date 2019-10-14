@@ -1,5 +1,14 @@
 const Setprototype = Set.prototype;
 const Mapprototype = Map.prototype;
+function ispromise(a: any): a is Promise<any> {
+  return a instanceof Promise;
+}
+function isdate(a: any): a is Date {
+  return a instanceof Date;
+}
+function isregexp(a: any): a is RegExp {
+  return a instanceof RegExp;
+}
 function isMap(a: any): a is Map<any, any> {
   return a instanceof Map;
 }
@@ -71,6 +80,12 @@ function deepobserveaddpath<
     // }, 0);
 
     // callback(t, k, v);
+  }
+
+  /* promise,date,regexp直接返回,不可代理,不可监测 */
+
+  if (ispromise(target) || isregexp(target) || isdate(target)) {
+    return target;
   }
   if (isfunction(target) || isobject(target)) {
     //
