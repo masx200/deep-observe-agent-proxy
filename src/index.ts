@@ -1,3 +1,11 @@
+const Setprototype = Set.prototype;
+const Mapprototype = Map.prototype;
+function isMap(a: any): a is Map<any, any> {
+  return a instanceof Map;
+}
+function isSet(a: any): a is Set<any> {
+  return a instanceof Set;
+}
 function isArray(a: any): a is any[] {
   return Array.isArray(a);
 }
@@ -17,7 +25,7 @@ const {
   set,
   setPrototypeOf
 } = Reflect;
-function isobject(a: any): boolean {
+function isobject(a: any): a is Exclude<object, Function> {
   return typeof a === "object" && a !== null;
 }
 function isfunction(a: any): a is Function {
@@ -36,10 +44,14 @@ interface callback {
 }
 
 */
-interface Callback<T extends object | Function | any[]> {
+interface Callback<
+  T extends object | Function | any[] | Set<any> | Map<any, any>
+> {
   (target: T, patharray: Array<string>, newvalue: any, oldvalue: any): void;
 }
-function deepobserveaddpath<T extends object | Function | any[]>(
+function deepobserveaddpath<
+  T extends object | Function | any[] | Set<any> | Map<any, any>
+>(
   target: T,
   callback: Callback<T>,
   patharray: Array<string> = [],
@@ -64,8 +76,43 @@ function deepobserveaddpath<T extends object | Function | any[]>(
     //
 
     let fakeobj: T;
+    if (isSet(target)) {
+      fakeobj = new Set([...target]) as any;
+      set(fakeobj, "add", (value: any) => {
+        Setprototype.add.call(target, value);
+        callback(ancestor, patharray, undefined, undefined);
 
-    if (isArray(target)) {
+        return Setprototype.add.call(fakeobj, value);
+      });
+      set(fakeobj, "delete", (value: any) => {
+        Setprototype.delete.call(target, value);
+        callback(ancestor, patharray, undefined, undefined);
+        return Setprototype.delete.call(fakeobj, value);
+      });
+      set(fakeobj, "clear", () => {
+        Setprototype.clear.call(target);
+        callback(ancestor, patharray, undefined, undefined);
+        return Setprototype.clear.call(fakeobj);
+      });
+      //   fakeobj.add = () => {};
+    } else if (isMap(target)) {
+      fakeobj = new Map([...target]) as any;
+      set(fakeobj, "clear", () => {
+        Mapprototype.clear.call(target);
+        callback(ancestor, patharray, undefined, undefined);
+        return Mapprototype.clear.call(fakeobj);
+      });
+      set(fakeobj, "set", (key: any, value: any) => {
+        Mapprototype.set.call(target, key, value);
+        callback(ancestor, patharray, undefined, undefined);
+        return Mapprototype.set.call(fakeobj, key, value);
+      });
+      set(fakeobj, "delete", (value: any) => {
+        Mapprototype.delete.call(target, value);
+        callback(ancestor, patharray, undefined, undefined);
+        return Mapprototype.delete.call(fakeobj, value);
+      });
+    } else if (isArray(target)) {
       fakeobj = [] as T;
       /* VM462:1 Uncaught TypeError: 'getOwnPropertyDescriptor' on proxy: trap returned descriptor for property 'length' that is incompatible with the existing property in the proxy target
     at Function.getOwnPropertyDescriptors (<anonymous>)
@@ -75,8 +122,9 @@ function deepobserveaddpath<T extends object | Function | any[]>(
     } else {
       fakeobj = {} as T;
     }
-
-    setPrototypeOf(fakeobj, null);
+    if (!isSet(target) && !isMap(target)) {
+      setPrototypeOf(fakeobj, null);
+    }
     // return (fakeobj => {
     return new Proxy(fakeobj, {
       defineProperty(t, p, a) {
@@ -121,12 +169,27 @@ function deepobserveaddpath<T extends object | Function | any[]>(
         }
       },
       apply(t, thisarg, argarray) {
-        if (
-          isfunction(target)
-          //typeof target === "function"
-        ) {
+        /* index.ts:153 Uncaught TypeError: Method Set.prototype.values called on incompatible receiver [object Object] */
+        if (isfunction(target)) {
+          /*  if (isSet(thisarg) || isMap(thisarg)) {
+            const result = apply(target, thisarg, argarray);
+            if (
+              target === Setprototype.delete ||
+              target === Setprototype.add ||
+              target === Setprototype.clear ||
+              (target === Mapprototype.set ||
+                target === Mapprototype.clear ||
+                target === Mapprototype.delete)
+            ) {
+              callback(ancestor, patharray, undefined, undefined);
+            }
+
+            return result;
+          } else { */
           return apply(target, thisarg, argarray);
         }
+        //   debugger;
+        // }
       },
       /* TypeError: 'get' on proxy: property 'prototype' is a read-only and non-configurable data property on the proxy target but the proxy did not return its actual value (expected '[object Symbol]' but got '[object Object]') */
       getOwnPropertyDescriptor(t, k) {
@@ -197,6 +260,10 @@ function deepobserveaddpath<T extends object | Function | any[]>(
       get(t, k) {
         // console.log("get", [t, k]);
         var value = get(target, k);
+
+        if (isfunction(value) && (isSet(target) || isMap(target))) {
+          return get(fakeobj, k).bind(fakeobj);
+        }
         if (isfunction(value) || isobject(value)) {
           // var descripter = getOwnPropertyDescriptor(t, k);
           // /* descripter  可能是undefined */
@@ -229,10 +296,9 @@ function deepobserveaddpath<T extends object | Function | any[]>(
     return target;
   }
 }
-export default function observedeepagent<T extends object | Function | any[]>(
-  target: T,
-  callback: Callback<T>
-): T {
+export default function observedeepagent<
+  T extends object | Function | any[] | Set<any> | Map<any, any>
+>(target: T, callback: Callback<T>): T {
   if (
     !isfunction(callback)
     //typeof callback !== "function"
